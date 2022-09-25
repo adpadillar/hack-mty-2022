@@ -1,10 +1,14 @@
 import { NextPage } from "next";
 import Image from "next/image";
-import { useReducer, useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
 import Logo from "../../public/logo.png";
 import Step from "../../components/Step";
-import { Camera } from "../../components";
+import createAccount from "../../utils/createAccount";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import app from "../../utils/firebase";
+import { useRouter } from "next/router";
 
 export interface stepData {
   description: string;
@@ -46,6 +50,8 @@ interface userData {
   tarjeta: {
     fecha_vencimiento: string;
     nip_cajero: string;
+    saldo: number;
+    numero: string;
   };
   persona: {
     nombre_completo: string;
@@ -55,11 +61,44 @@ interface userData {
 }
 
 const OnboardingSteps: NextPage<OnboardingStepsProps> = ({ number }) => {
+  const router = useRouter();
+
+  const submitForm = async () => {
+    // First create auth account
+    const user = await createAccount(
+      userData.persona.correo_electronico,
+      password
+    );
+
+    if (user && user.user.uid) {
+      // Upload image to firebase storage
+      const storage = getStorage(app);
+      const fileRef = ref(storage, `faces/${user.user.uid}`);
+      const res = await uploadBytes(fileRef, image || new Blob());
+      const downloadURL = await getDownloadURL(res.ref);
+
+      // Create a new document in the users collection
+      const db = getFirestore(app);
+
+      const docRef = doc(db, "users", user.user.uid);
+      await setDoc(docRef, {
+        ...userData,
+        persona: { ...userData.persona, autenticacion_facial: downloadURL },
+      });
+
+      router.push("/app");
+    }
+  };
+
+  const [image, setImage] = useState<null | Blob>(null);
+  const [password, setPassword] = useState("");
   const [step, setStep] = useState<number>(0);
   const [userData, setUserData] = useState<userData>({
     tarjeta: {
       fecha_vencimiento: "",
       nip_cajero: "",
+      saldo: 500,
+      numero: number,
     },
     persona: {
       nombre_completo: "",
@@ -194,6 +233,8 @@ const OnboardingSteps: NextPage<OnboardingStepsProps> = ({ number }) => {
               userData.persona.nombre_completo
             )
           }
+          setImage={setImage}
+          image={image}
         >
           <div className="px-4">
             <div className="pt-4 text-lg">
@@ -243,6 +284,39 @@ const OnboardingSteps: NextPage<OnboardingStepsProps> = ({ number }) => {
                 </div>
                 <div>
                   <p>{userData.persona.correo_electronico.length}/40</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Step>
+        <Step
+          number={number}
+          order={3}
+          setStep={setStep}
+          step={step}
+          description="Crea una contraseña para ingresar a la banca electrónica"
+          submit={submitForm}
+        >
+          <div className="px-4">
+            <div className="pt-4 text-lg">
+              <input
+                value={password}
+                onChange={(e) => {
+                  // Max length is 40
+                  if (e.target.value.length > 20) return;
+
+                  setPassword(e.target.value);
+                }}
+                type="password"
+                placeholder="Contraseña"
+                className="w-full py-3 px-3 text-gray-600/70 border border-b-gray-600/70 border-x-white border-t-white"
+              />
+              <div className="text-xs px-2 py-3 text-gray-600/70 flex justify-between">
+                <div>
+                  <p>Minimo 6 caracteres máximo 20</p>
+                </div>
+                <div>
+                  <p>{password.length}/20</p>
                 </div>
               </div>
             </div>

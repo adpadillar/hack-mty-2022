@@ -2,12 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 
 interface CameraProps {
   on: boolean;
+  image: Blob | null;
+  setImage: React.Dispatch<React.SetStateAction<Blob | null>>;
 }
 
-const Camera: React.FC<CameraProps> = ({ on }) => {
+const Camera: React.FC<CameraProps> = ({ on, image, setImage }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   let photoRef = useRef<HTMLCanvasElement>(null);
-  const [image, setImage] = useState<Blob | null>();
 
   useEffect(() => {
     console.log(image);
@@ -80,7 +81,7 @@ const Camera: React.FC<CameraProps> = ({ on }) => {
       <canvas
         className={`${
           image
-            ? "aspect-video h-40 shadow-2xl rounded-lg border border-white bg-black pt-0"
+            ? "aspect-video h-40 px-8 shadow-2xl rounded-lg border border-white bg-black pt-0"
             : "hidden"
         }`}
         ref={photoRef}
