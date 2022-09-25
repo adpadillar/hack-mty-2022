@@ -5,8 +5,11 @@
 /.pnp
 .pnp.js
 
+__pycache__/
+
 # testing
 /coverage
+backend/img/*.jpg
 
 # next.js
 /.next/

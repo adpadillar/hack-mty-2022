@@ -258,7 +258,7 @@ const OnboardingSteps: NextPage<OnboardingStepsProps> = ({ number }) => {
               />
               <div className="text-xs px-2 py-3 text-gray-600/70 flex justify-between">
                 <div>
-                  <p>MM/YYYY</p>
+                  <p>Escribe tu nombre completo</p>
                 </div>
               </div>
             </div>

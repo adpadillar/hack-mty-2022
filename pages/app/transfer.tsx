@@ -44,7 +44,9 @@ const Transfer: NextPage<TransferProps> = () => {
 
   const submitImage = async () => {
     // TODO: Upload image to firebase storage
-    const storageRef = ref(storage, `faces/${generateAlphanumeric(10)}.jpg`);
+    const id = generateAlphanumeric(10);
+
+    const storageRef = ref(storage, `faces/${id}.jpg`);
     const uploadTask = await uploadBytes(storageRef, image!);
     const downloadURL = await getDownloadURL(uploadTask.ref);
 
@@ -113,6 +115,15 @@ const Transfer: NextPage<TransferProps> = () => {
       </Head>
       {!loading && user ? (
         <div className="min-h-screen from-rojo-banorte to-red-500 bg-gradient-to-b pt-12 overflow-hidden">
+          {receiverData && (
+            <div className="absolute top-4 w-full grid items-center justify-center">
+              <img
+                src={`https://avatars.dicebear.com/api/avataaars/${receiverData?.uid}.svg?mood[]=happy&background=%23ffffff`}
+                alt="Profile Picture"
+                className="w-36 h-36 rounded-full"
+              />
+            </div>
+          )}
           <Step
             number={userData?.tarjeta.numero || ""}
             order={1}
