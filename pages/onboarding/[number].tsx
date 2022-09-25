@@ -46,7 +46,7 @@ const STEP_0: stepData = {
   ],
 };
 
-interface userData {
+export interface userData {
   tarjeta: {
     fecha_vencimiento: string;
     nip_cajero: string;
