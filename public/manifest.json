@@ -1,12 +1,12 @@
 {
   "name": "Banorte Banca electrónica",
   "short_name": "Banorte",
-  "theme_color": "FE0000",
-  "background_color": "FE0000",
+  "theme_color": "#FE0000",
+  "background_color": "#FE0000",
   "display": "fullscreen",
   "orientation": "portrait",
   "scope": "/",
-  "start_url": "/reporting/",
+  "start_url": "/onboarding/",
   "icons": [
     {
       "src": "icons/icon-72x72.png",
