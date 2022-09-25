@@ -58,6 +58,7 @@ export interface userData {
     correo_electronico: string;
     autenticacion_facial: string;
   };
+  uid: string;
 }
 
 const OnboardingSteps: NextPage<OnboardingStepsProps> = ({ number }) => {
@@ -84,6 +85,7 @@ const OnboardingSteps: NextPage<OnboardingStepsProps> = ({ number }) => {
       await setDoc(docRef, {
         ...userData,
         persona: { ...userData.persona, autenticacion_facial: downloadURL },
+        uid: user.user.uid,
       });
 
       router.push("/app");
@@ -105,6 +107,7 @@ const OnboardingSteps: NextPage<OnboardingStepsProps> = ({ number }) => {
       correo_electronico: "",
       autenticacion_facial: "",
     },
+    uid: "",
   });
 
   return (

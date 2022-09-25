@@ -2,6 +2,7 @@ import { getAuth } from "firebase/auth";
 import { doc, DocumentReference, getFirestore } from "firebase/firestore";
 import { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import app from "../../utils/firebase";
@@ -13,6 +14,8 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const App: NextPage<AppProps> = () => {
+  const router = useRouter();
+
   const [user, loading, error] = useAuthState(auth);
   const [userData, userDataLoading, userDataError] = useDocumentData<userData>(
     user ? doc(db, "users", user.uid) : (null as any)
@@ -83,7 +86,10 @@ const App: NextPage<AppProps> = () => {
                     Recompensas
                   </p>
                 </div>
-                <div className="grid text-gray-600 items-center justify-center py-2">
+                <div
+                  onClick={() => router.push("/app/transfer")}
+                  className="grid text-gray-600 items-center justify-center py-2"
+                >
                   <span className="material-symbols-outlined flex items-center justify-center">
                     local_atm
                   </span>
@@ -101,7 +107,10 @@ const App: NextPage<AppProps> = () => {
                 <div className="pt-4">
                   <div className="rounded-xl overflow-hidden shadow-xl relative">
                     <img src="/recompensas.png" alt="" className="w-full" />
-                    <div className="absolute right-0 bottom-4 bg-[#FE0000] px-6 rounded-l-xl text-white shadow-md">
+                    <div
+                      className="absolute right-0 bottom-4 bg-[#FE0000] px-6 rounded-l-xl text-white shadow-md"
+                      onClick={() => router.push("/app/rewards")}
+                    >
                       <span className="material-symbols-outlined py-1 text-3xl">
                         arrow_forward
                       </span>
