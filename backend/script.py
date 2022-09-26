@@ -38,3 +38,9 @@ def get_compare_faces():
     print("Result: ", result)
 
     return resp
+
+
+if __name__ == "__main__":
+    from waitress import serve
+    print("Server started!")
+    serve(app, host="0.0.0.0", port=8080)
