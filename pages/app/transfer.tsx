@@ -71,7 +71,7 @@ const Transfer: NextPage<TransferProps> = () => {
       `Comparing ${user.persona.nombre_completo}, ${user.persona.autenticacion_facial} with ${face_2}`
     );
     // Make a request to the backend to compare the faces
-    const fetchUrl = `http://127.0.0.1:5000/?j=${encodeURIComponent(
+    const fetchUrl = `http://127.0.0.1:8080/?j=${encodeURIComponent(
       user.persona.autenticacion_facial
     )}&k=${encodeURIComponent(face_2)}`;
 

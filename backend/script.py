@@ -1,9 +1,12 @@
 from flask import Flask, Response
 from flask import request
+from flask_cors import CORS, cross_origin
 from compare_faces import compare_faces
 import requests
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 def download_image(url, filename):
@@ -15,7 +18,9 @@ def download_image(url, filename):
 
 
 @app.route("/")
+@cross_origin()
 def get_compare_faces():
+    print("/ called")
     # Download the images from the URLs
     # Compare the faces
     # Return the result
@@ -25,7 +30,6 @@ def get_compare_faces():
     filename_1 = image1.split('=')[-1].lower()
     filename_2 = image2.split('=')[-1].lower()
 
-    # Access control allow origin header
 
     download_image(image1, f'{filename_1}.jpg')
     download_image(image2, f'{filename_2}.jpg')
@@ -33,7 +37,7 @@ def get_compare_faces():
     result = compare_faces(
         f"./img/{filename_1}.jpg", f"./img/{filename_2}.jpg")
     resp = Response(f"{result}", content_type="text/plain")
-    resp.headers.add("Access-Control-Allow-Origin", "*")
+    # resp.headers.add("Access-Control-Allow-Origin", "*")
 
     print("Result: ", result)
 
